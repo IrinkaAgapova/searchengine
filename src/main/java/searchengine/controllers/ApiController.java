@@ -28,30 +28,31 @@ public class ApiController {
 
 
     @GetMapping("/statistics")
-    public ResponseEntity<StatisticsResponse> statistics() {
-        return ResponseEntity.ok(statisticsService.getStatistics());
+    public StatisticsResponse statistics() {
+        return statisticsService.getStatistics();
     }
 
+
     @GetMapping("/startIndexing")
-    public ResponseEntity<IndexingResponse> startIndexing() {
-        return ResponseEntity.ok(indexingService.startIndexing());
+    public IndexingResponse startIndexing() {
+        return indexingService.startIndexing();
     }
 
     @GetMapping("/stopIndexing")
-    public ResponseEntity<IndexingResponse> stopIndexing() {
-        return ResponseEntity.ok(indexingService.stopIndexing());
+    public IndexingResponse stopIndexing() {
+        return indexingService.stopIndexing();
     }
 
     @PostMapping("/indexPage")
-    public ResponseEntity<Response> indexPage(@RequestParam String url) {
-        return ResponseEntity.ok(indexingPage.indexPage(url));
+    public Response indexPage(@RequestParam String url) {
+        return indexingPage.indexPage(url);
     }
 
-      @GetMapping("/search")
-       public ResponseEntity<ResponseSearch> search(@RequestParam String query,
-                                                    @RequestParam(required = false) String site,
-                                                    @RequestParam(defaultValue = "0") Integer offset,
-                                                    @RequestParam(defaultValue = "20") Integer limit){
-      return ResponseEntity.ok(searchService.systemSearch(query, site, offset, limit));
-     }
+    @GetMapping("/search")
+    public ResponseSearch search(@RequestParam String query,
+                                 @RequestParam(required = false) String site,
+                                 @RequestParam(defaultValue = "0") Integer offset,
+                                 @RequestParam(defaultValue = "20") Integer limit) {
+        return searchService.systemSearch(query, site, offset, limit);
+    }
 }
