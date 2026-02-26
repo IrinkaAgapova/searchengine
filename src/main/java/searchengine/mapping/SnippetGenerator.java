@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class SnippetGenerator {
-    private static final int CONTEXT_RADIUS = 200;
+    private static final int CONTEXT_RADIUS = 130;
 
     public static String generatedSnippet(String query, String content) {
         String text = Jsoup.parse(content).text();
@@ -17,11 +17,13 @@ public final class SnippetGenerator {
         int index = phraseIndex != -1 ? phraseIndex : findFirstOccurrenceIndex(text, words);
 
         if (index == -1) {
-            return text.length() > 100 ? text.substring(0, 300) : text;
+
+            return text.length() > 100 ? text.substring(0, 230) : text;
         }
 
         int start = index - 50 <= 0 ? 0 : startSnippet(text,index);
         int end = index + CONTEXT_RADIUS > text.length() ? text.length() : endSnippet(text,index);
+
 
         return highlightWords(text.substring(start, end), words);
     }
