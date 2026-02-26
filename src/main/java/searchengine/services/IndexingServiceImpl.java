@@ -5,6 +5,7 @@ import org.hibernate.Hibernate;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import searchengine.config.Website;
 import searchengine.config.SitesList;
+import searchengine.dto.IndexingException;
 import searchengine.dto.IndexingResponse;
 import searchengine.dto.ResponseStatusException;
 import searchengine.mapping.SiteCrawler;
@@ -43,6 +44,7 @@ public class IndexingServiceImpl implements IndexingService {
     private final JdbcTemplate jdbcTemplate;
 
     public IndexingResponse startIndexing() {
+
         if (indexingInProgress.compareAndSet(false, true)) {
             log.info("Запуск индексации");
             forkJoinPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(),
@@ -51,8 +53,10 @@ public class IndexingServiceImpl implements IndexingService {
                 forkJoinPool.submit(() -> indexSite(sitesConfig));
             }
             return new IndexingResponse(true);
-        } else return new IndexingResponse(false, "Индексация уже запущена");
+        } else
+            throw new IndexingException("Индексация уже запущена");
     }
+
 
     public IndexingResponse stopIndexing() {
         if (!forkJoinPool.isShutdown()) {
@@ -61,9 +65,10 @@ public class IndexingServiceImpl implements IndexingService {
             log.info("Индексация была остановлена пользователем");
             return new IndexingResponse(true);
         } else {
-            return new IndexingResponse(false, "Индексация не запущена");
+            throw new IndexingException("Индексация не запущена");
         }
     }
+
 
     public void indexSite(Website sitesUrl) {
         Site site;
